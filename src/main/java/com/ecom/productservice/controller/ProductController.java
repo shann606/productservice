@@ -23,7 +23,7 @@ public class ProductController {
 	@PostMapping("/newproduct")
 	private ResponseEntity addProducts(){
 		
-		return null;
+		return null; 
 		
 		
 	}
