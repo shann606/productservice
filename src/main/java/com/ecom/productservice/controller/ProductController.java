@@ -6,17 +6,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ecom.productservice.dto.CategoriesDTO;
 import com.ecom.productservice.dto.CategoriesDTO.CategoryDTO;
+import com.ecom.productservice.entity.Category;
 import com.ecom.productservice.dto.ProductItemsDTO;
 import com.ecom.productservice.dto.ProductsDTO;
 import com.ecom.productservice.dto.VariantsDTO;
+import com.ecom.productservice.service.ProductService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,17 +30,37 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/v1/products")
 @Slf4j
 public class ProductController {
+	
+	@Autowired
+	private ProductService productService;
+	
+	
+	
 
-	@GetMapping("/getProducts")
+	@GetMapping("/getproducts")
 	private ResponseEntity<CategoriesDTO> getProducts() {
 
-		return ResponseEntity.ok(getCategoires());
+		return ResponseEntity.ok(productService.getAllProducts());
 	}
 
 	@PostMapping("/newproduct")
-	private ResponseEntity addProducts() {
+	private ResponseEntity<CategoriesDTO.CategoryDTO> addProducts(@RequestBody CategoriesDTO.CategoryDTO category ) {
 
-		return null;
+		return ResponseEntity.ok(productService.saveCategories(category));
+
+	}
+	
+	@GetMapping("/{id}")
+	private ResponseEntity<CategoriesDTO.CategoryDTO> findProductById(@PathVariable("id") UUID id){
+		
+		return ResponseEntity.ok(productService.findById(id));
+		
+	}
+	
+	@PutMapping("/updateproduct")
+	private ResponseEntity<CategoriesDTO.CategoryDTO> updateProducts(@RequestBody CategoriesDTO.CategoryDTO category ) {
+
+		return ResponseEntity.ok(productService.saveCategories(category));
 
 	}
 

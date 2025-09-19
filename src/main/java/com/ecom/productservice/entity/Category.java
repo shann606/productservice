@@ -1,6 +1,7 @@
 package com.ecom.productservice.entity;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,13 +51,17 @@ public class Category {
 	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
 	@JoinColumn(name = "category_id", nullable = false )
 	private List<Variants> variants;
-
+	
+	
 	@PrePersist
 	public void generateId() {
 		if (id == null) {
 			id = UUID.randomUUID();
 		}
 	}
+	
+	
+	
 
 	
 }

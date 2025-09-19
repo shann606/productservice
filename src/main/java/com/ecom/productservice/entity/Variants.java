@@ -1,6 +1,7 @@
 package com.ecom.productservice.entity;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,10 +13,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Entity
 @Table(name = "online_variants")
@@ -45,11 +50,30 @@ public class Variants {
 
 	@Column(name = "updated_by")
 	private String updatedBy;
-
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-
-	@JoinColumn(name = "category_var_id")
+	
+	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+	@JoinColumn(name = "category_var_id", nullable = false )
 	private List<ProductItems> productItems;
+	
+	
+
+	/*@OneToMany(mappedBy = "variants",cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ProductItems> productItems = new ArrayList<ProductItems>();
+	
+	
+	
+	// Helper methods for bidirectional sync
+    public void addProductItem(ProductItems productItem) {
+    	productItems.add(productItem);
+        productItem.setVariants(this);
+    }
+
+    public void removeProductItem(ProductItems productItem) {
+    	productItems.remove(productItem);
+        productItem.setVariants(null);
+    }
+
+	*/
 
 	@PrePersist
 	public void generateId() {

@@ -10,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +30,7 @@ public class ProductItems {
 	private UUID id;
 	
 	@Column(name = "category_var_id" , nullable = false , insertable=false, updatable=false)
-	private UUID categoryVarId;
+	private UUID categoryVarId; 
 	
 	@Column(name = "product_item_name" , nullable = false)
 	private String productItemName;
@@ -49,11 +50,35 @@ public class ProductItems {
 	@Column(name ="updated_by")
 	private String updatedBy;
 	
-	@OneToMany(cascade = CascadeType.ALL , orphanRemoval = true)
-	@JoinColumn(name = "product_item_id")
+	/*@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "category_var_id")
+	private Variants variants;
+	*/
+	
+	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+	@JoinColumn(name = "product_item_id", nullable = false )
 	private List<Products> products;
 	
+	// helper methods
+	/*
+	 * // Helper methods for bidirectional sync public void addProduct(Products
+	 * product) { products.add(product); product.setProductItem(this);
+	 * 
+	 * }
+	 * 
+	 * public void removeProduct(Products product) { products.remove(product);
+	 * product.setProductItem(null);
+	 * 
+	 * }
+	 */
 	
+	
+	@PrePersist
+	public void generateId() {
+		if (id == null) {
+			id = UUID.randomUUID();
+		}
+	}
 	
 
 }
