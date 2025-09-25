@@ -63,6 +63,12 @@ public class ProductController {
 		return ResponseEntity.ok(productService.saveCategories(category));
 
 	}
+	
+	
+	@GetMapping("recommendation/{prodItemId}") 
+	private ResponseEntity<List<ProductsDTO>> getRecommendationProds(@PathVariable("prodItemId") UUID prodItemId)		throws Exception{
+		return ResponseEntity.ok(productService.getRecommendedProducts(prodItemId));
+	}
 
 	private CategoriesDTO getCategoires() {
 		List<CategoryDTO> list = new ArrayList<CategoriesDTO.CategoryDTO>();
