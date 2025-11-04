@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import com.ecom.productservice.dto.CategoriesDTO;
 import com.ecom.productservice.dto.CategoriesDTO.CategoryDTO;
@@ -39,7 +38,6 @@ public interface CustomMapper {
 		try {
 			desc = clob.getSubString(1, (int) clob.length());
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return desc;
@@ -55,7 +53,6 @@ public interface CustomMapper {
 		try {
 			clob = new javax.sql.rowset.serial.SerialClob(desc.toCharArray());
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return clob;
