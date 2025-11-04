@@ -50,27 +50,10 @@ public class ProductItems {
 	@Column(name ="updated_by")
 	private String updatedBy;
 	
-	/*@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "category_var_id")
-	private Variants variants;
-	*/
 	
 	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
 	@JoinColumn(name = "product_item_id", nullable = false )
 	private List<Products> products;
-	
-	// helper methods
-	/*
-	 * // Helper methods for bidirectional sync public void addProduct(Products
-	 * product) { products.add(product); product.setProductItem(this);
-	 * 
-	 * }
-	 * 
-	 * public void removeProduct(Products product) { products.remove(product);
-	 * product.setProductItem(null);
-	 * 
-	 * }
-	 */
 	
 	
 	@PrePersist

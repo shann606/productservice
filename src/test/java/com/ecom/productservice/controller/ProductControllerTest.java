@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -55,7 +54,7 @@ class ProductControllerTest {
 	}
 
 	@BeforeAll
-	public static void getCategoires() {
+	static void getCategoires() {
 		List<CategoryDTO> list = new ArrayList<CategoriesDTO.CategoryDTO>();
 		List<VariantsDTO> varList = new ArrayList<VariantsDTO>();
 		List<ProductItemsDTO> itemList = new ArrayList<ProductItemsDTO>();
@@ -93,7 +92,7 @@ class ProductControllerTest {
 
 	@Test
 	@Description("Testing ProductController : for All the products")
-	public void getProducts() throws Exception {
+	void getProducts() throws Exception {
 
 		when(productSerivce.getAllProducts()).thenReturn(cat);
 
@@ -106,7 +105,7 @@ class ProductControllerTest {
 
 	@Test
 	@Description("Testing ProductController : find by productId")
-	public void getProductByid() throws Exception {
+	void getProductByid() throws Exception {
 
 		UUID id = UUID.fromString("b516f577-11da-424e-9ad0-bc23ab15df1b");
 
@@ -121,27 +120,24 @@ class ProductControllerTest {
 
 	@Test
 	@Description("Testing ProductController : creating new product")
-	public void addNewProduct() throws Exception {
+	void addNewProduct() throws Exception {
 
 		when(productSerivce.saveCategories(category)).thenReturn(category);
 
 		mockMVC.perform(post("/api/v1/products/newproduct").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(category))).andExpect(status().isOk()).andReturn();
 
-		// verify(productSerivce, atLeastOnce()).saveCategories(category);
 
 	}
 
 	@Test
 	@Description("Testing ProductController : updating exiting product")
-	public void updateProduct() throws Exception {
+	void updateProduct() throws Exception {
 
 		when(productSerivce.saveCategories(category)).thenReturn(category);
 
 		mockMVC.perform(put("/api/v1/products/updateproduct").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(category))).andExpect(status().isOk()).andReturn();
-
-		// verify(productSerivce, atLeastOnce()).saveCategories(category);
 
 	}
 

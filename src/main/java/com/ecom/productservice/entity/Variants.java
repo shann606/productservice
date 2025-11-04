@@ -1,7 +1,6 @@
 package com.ecom.productservice.entity;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,25 +54,6 @@ public class Variants {
 	@JoinColumn(name = "category_var_id", nullable = false )
 	private List<ProductItems> productItems;
 	
-	
-
-	/*@OneToMany(mappedBy = "variants",cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ProductItems> productItems = new ArrayList<ProductItems>();
-	
-	
-	
-	// Helper methods for bidirectional sync
-    public void addProductItem(ProductItems productItem) {
-    	productItems.add(productItem);
-        productItem.setVariants(this);
-    }
-
-    public void removeProductItem(ProductItems productItem) {
-    	productItems.remove(productItem);
-        productItem.setVariants(null);
-    }
-
-	*/
 
 	@PrePersist
 	public void generateId() {

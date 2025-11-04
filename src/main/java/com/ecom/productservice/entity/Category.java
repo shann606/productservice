@@ -1,7 +1,6 @@
 package com.ecom.productservice.entity;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
