@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,10 @@ import com.ecom.productservice.dto.ProductItemsDTO;
 import com.ecom.productservice.dto.ProductsDTO;
 import com.ecom.productservice.dto.VariantsDTO;
 import com.ecom.productservice.service.ProductService;
+import static com.ecom.productservice.util.AesEncryptionUtil.encrypt;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,6 +37,11 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductController {
 
 	private ProductService productService;
+
+	@Value("${crypto.secret-key}")
+	private String secretKey;
+
+	private ObjectMapper obj;
 
 	@Autowired
 	public ProductController(ProductService productService) {
@@ -66,9 +76,31 @@ public class ProductController {
 	}
 
 	@GetMapping("recommendation/{prodItemId}")
-	public ResponseEntity<List<ProductsDTO>> getRecommendationProds(@PathVariable("prodItemId") UUID prodItemId)
-			throws Exception {
-		return ResponseEntity.ok(productService.getRecommendedProducts(prodItemId));
+	public ResponseEntity<?> getRecommendationProds(@PathVariable("prodItemId") UUID prodItemId) throws Exception {
+
+		List<ProductsDTO> data;
+		String jsonString;
+		ResponseEntity<?> response;
+
+		if (!secretKey.isBlank()) {
+			data = productService.getRecommendedProducts(prodItemId);
+
+			obj = JsonMapper.builder().addModule(new JavaTimeModule()).build();
+
+			log.info("We re secure mode of sending json object");
+
+			jsonString = obj.writeValueAsString(data);
+			jsonString = encrypt(jsonString, secretKey);
+
+			response = ResponseEntity.ok(jsonString);
+
+		} else {
+			log.info("are we coming here non secure");
+			data = productService.getRecommendedProducts(prodItemId);
+			response = ResponseEntity.ok(data);
+		}
+
+		return response;
 	}
 
 	@GetMapping("/filter")
@@ -112,9 +144,7 @@ public class ProductController {
 		return CategoriesDTO.builder().categories(list).build();
 
 	}
-	
-	
-	
-	private final static String kAdmin="Admin";
+
+	private final static String kAdmin = "Admin";
 
 }
