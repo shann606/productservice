@@ -49,14 +49,8 @@ public class ProductService {
 	}
 
 	public CategoriesDTO.CategoryDTO findById(UUID id) {
-		Category cat;
-		Optional<Category> opt = catRepo.findById(id);
 
-		if (opt.isEmpty()) {
-			throw new NullPointerException("No value found");
-		} else {
-			cat = opt.get();
-		}
+		Category cat = catRepo.findById(id).orElseThrow();
 
 		return mapper.toCategoryDTO(cat);
 	}
