@@ -15,7 +15,7 @@ public class GlobalException extends RuntimeException {
 
 		ExceptionDTO exe = new ExceptionDTO("Failed", ex.getMessage());
 
-		return new ResponseEntity<ExceptionDTO>(exe, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(exe, HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
 

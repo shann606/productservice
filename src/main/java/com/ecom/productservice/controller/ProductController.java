@@ -1,12 +1,13 @@
 package com.ecom.productservice.controller;
 
+import static com.ecom.productservice.util.AesEncryptionUtil.encrypt;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,7 @@ import com.ecom.productservice.dto.ProductItemsDTO;
 import com.ecom.productservice.dto.ProductsDTO;
 import com.ecom.productservice.dto.VariantsDTO;
 import com.ecom.productservice.service.ProductService;
-import static com.ecom.productservice.util.AesEncryptionUtil.encrypt;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -41,9 +42,6 @@ public class ProductController {
 	@Value("${crypto.secret-key}")
 	private String secretKey;
 
-	private ObjectMapper obj;
-
-	@Autowired
 	public ProductController(ProductService productService) {
 		this.productService = productService;
 	}
@@ -62,7 +60,7 @@ public class ProductController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<CategoriesDTO.CategoryDTO> findProductById(@PathVariable("id") UUID id) {
+	public ResponseEntity<CategoriesDTO.CategoryDTO> findProductById(@PathVariable(required = true) UUID id) {
 
 		return ResponseEntity.ok(productService.findById(id));
 
@@ -76,11 +74,13 @@ public class ProductController {
 	}
 
 	@GetMapping("recommendation/{prodItemId}")
-	public ResponseEntity<?> getRecommendationProds(@PathVariable("prodItemId") UUID prodItemId) throws Exception {
+	public ResponseEntity<?> getRecommendationProds(@PathVariable(required = true) UUID prodItemId)
+			throws JsonProcessingException {
 
 		List<ProductsDTO> data;
-		String jsonString;
+		String jsonString = null;
 		ResponseEntity<?> response;
+		ObjectMapper obj;
 
 		if (!secretKey.isBlank()) {
 			data = productService.getRecommendedProducts(prodItemId);
@@ -89,8 +89,12 @@ public class ProductController {
 
 			log.info("We re secure mode of sending json object");
 
-			jsonString = obj.writeValueAsString(data);
-			jsonString = encrypt(jsonString, secretKey);
+			try {
+				jsonString = obj.writeValueAsString(data);
+				jsonString = encrypt(jsonString, secretKey);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 			response = ResponseEntity.ok(jsonString);
 
@@ -104,47 +108,45 @@ public class ProductController {
 	}
 
 	@GetMapping("/filter")
-	public ResponseEntity<CategoriesDTO> filterCategoryBy(
-			@RequestParam(name = "catName", required = false) String catName,
-			@RequestParam(name = "available", required = false) Boolean available,
-			@RequestParam(name = "createdBy", required = false) String createdBy) throws Exception {
+	public ResponseEntity<CategoriesDTO> filterCategoryBy(@RequestParam(required = false) String catName,
+			@RequestParam(required = false) Boolean available, @RequestParam(required = false) String createdBy) {
 
 		return ResponseEntity.ok(productService.filterCategoryBy(catName, available, createdBy));
 
 	}
 
 	private CategoriesDTO getCategoires() {
-		List<CategoryDTO> list = new ArrayList();
+		List<CategoryDTO> list = new ArrayList<>();
 		List<VariantsDTO> varList = new ArrayList<>();
 		List<ProductItemsDTO> itemList = new ArrayList<>();
 		List<ProductsDTO> prodList1 = new ArrayList<>();
 		List<ProductsDTO> prodList2 = new ArrayList<>();
 		prodList1.add(ProductsDTO.builder().id(UUID.randomUUID()).available(true).brand("Polo")
-				.description("PoloTshits will fit good").createdOn(OffsetDateTime.now()).createdBy(kAdmin)
+				.description("PoloTshits will fit good").createdOn(OffsetDateTime.now()).createdBy(KADMIN)
 				.price(new BigDecimal(1000)).build());
 		prodList1.add(ProductsDTO.builder().id(UUID.randomUUID()).available(true).brand("Jockey")
-				.description("Jockey Tshits will fit good").createdOn(OffsetDateTime.now()).createdBy(kAdmin)
+				.description("Jockey Tshits will fit good").createdOn(OffsetDateTime.now()).createdBy(KADMIN)
 				.price(new BigDecimal(2000)).build());
 		prodList2.add(ProductsDTO.builder().id(UUID.randomUUID()).available(true).brand("Peter England")
-				.description("Formal PE will fit good").createdOn(OffsetDateTime.now()).createdBy(kAdmin)
+				.description("Formal PE will fit good").createdOn(OffsetDateTime.now()).createdBy(KADMIN)
 				.price(new BigDecimal(400)).build());
 		prodList2.add(ProductsDTO.builder().id(UUID.randomUUID()).available(true).brand("Bombay Dying")
-				.description("Formal Bombay Dying will fit good").createdOn(OffsetDateTime.now()).createdBy(kAdmin)
+				.description("Formal Bombay Dying will fit good").createdOn(OffsetDateTime.now()).createdBy(KADMIN)
 				.price(new BigDecimal(1000)).build());
 
 		itemList.add(ProductItemsDTO.builder().id(UUID.randomUUID()).available(true).productItemName("Formal Shirts")
-				.createdOn(OffsetDateTime.now()).createdBy(kAdmin).products(prodList2).build());
+				.createdOn(OffsetDateTime.now()).createdBy(KADMIN).products(prodList2).build());
 		itemList.add(ProductItemsDTO.builder().id(UUID.randomUUID()).available(true).productItemName("T Shirts")
-				.createdOn(OffsetDateTime.now()).createdBy(kAdmin).products(prodList1).build());
+				.createdOn(OffsetDateTime.now()).createdBy(KADMIN).products(prodList1).build());
 		varList.add(VariantsDTO.builder().id(UUID.randomUUID()).available(true).createdOn(OffsetDateTime.now())
-				.createdBy(kAdmin).variantName("Men's Clothing").productItems(itemList).build());
+				.createdBy(KADMIN).variantName("Men's Clothing").productItems(itemList).build());
 		list.add(CategoriesDTO.CategoryDTO.builder().id(UUID.randomUUID()).categoryName("Fashions").available(true)
-				.createdOn(OffsetDateTime.now()).createdBy(kAdmin).variants(varList).build());
+				.createdOn(OffsetDateTime.now()).createdBy(KADMIN).variants(varList).build());
 
 		return CategoriesDTO.builder().categories(list).build();
 
 	}
 
-	private final static String kAdmin = "Admin";
+	private static final String KADMIN = "Admin";
 
 }
