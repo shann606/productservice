@@ -4,6 +4,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -45,9 +48,11 @@ public class ProductItems {
 	private OffsetDateTime updatedOn;
 	
 	@Column(name ="created_by")
+	@CreatedBy
 	private String createdBy;
 	
 	@Column(name ="updated_by")
+	@LastModifiedBy
 	private String updatedBy;
 	
 	

@@ -1,10 +1,11 @@
 package com.ecom.productservice.service;
 
+import static com.ecom.productservice.util.CategorySpecfication.filterBy;
+
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ecom.productservice.datamapper.CustomMapper;
@@ -14,7 +15,6 @@ import com.ecom.productservice.dto.ProductsDTO;
 import com.ecom.productservice.entity.Category;
 import com.ecom.productservice.repository.CategoryRepository;
 import com.ecom.productservice.repository.ProductsRepository;
-import static com.ecom.productservice.util.CategorySpecfication.filterBy;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +28,6 @@ public class ProductService {
 
 	private ProductsRepository prodRepo;
 
-	@Autowired
 	public ProductService(CategoryRepository catRepo, CustomMapper mapper, ProductsRepository prodRepo) {
 		this.catRepo = catRepo;
 		this.mapper = mapper;
@@ -43,7 +42,7 @@ public class ProductService {
 
 	public CategoriesDTO getAllProducts() {
 
-		List<CategoryDTO> list = mapper.toListCategoryDTO(catRepo.findAll());
+		List<CategoryDTO> list = mapper.toListCategoryDTO(catRepo.findAll(Sort.by("categoryName").descending()));
 
 		return CategoriesDTO.builder().categories(list).build();
 	}
@@ -55,12 +54,12 @@ public class ProductService {
 		return mapper.toCategoryDTO(cat);
 	}
 
-	public List<ProductsDTO> getRecommendedProducts(UUID prodItemId) throws Exception {
+	public List<ProductsDTO> getRecommendedProducts(UUID prodItemId) {
 
 		return mapper.toProductsDTO(prodRepo.findAllByProductItemId(prodItemId));
 	}
 
-	public CategoriesDTO filterCategoryBy(String catName, boolean available, String createdBy) throws Exception {
+	public CategoriesDTO filterCategoryBy(String catName, boolean available, String createdBy) {
 
 		List<Category> list = catRepo.findAll(filterBy(catName, available, createdBy));
 

@@ -5,6 +5,9 @@ import java.sql.Clob;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -49,9 +52,11 @@ public class Products {
 	private OffsetDateTime updatedOn;
 	
 	@Column(name ="created_by")
+	@CreatedBy
 	private String createdBy;
 	
 	@Column(name ="updated_by")
+	@LastModifiedBy
 	private String updatedBy;
 	
 	
