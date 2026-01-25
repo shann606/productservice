@@ -115,6 +115,7 @@ public class ProductController {
 
 	}
 
+	@SuppressWarnings("unused")
 	private CategoriesDTO getCategoires() {
 		List<CategoryDTO> list = new ArrayList<>();
 		List<VariantsDTO> varList = new ArrayList<>();
