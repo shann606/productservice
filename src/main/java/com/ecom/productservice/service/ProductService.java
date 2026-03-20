@@ -12,7 +12,9 @@ import com.ecom.productservice.datamapper.CustomMapper;
 import com.ecom.productservice.dto.CategoriesDTO;
 import com.ecom.productservice.dto.CategoriesDTO.CategoryDTO;
 import com.ecom.productservice.dto.ProductsDTO;
+import com.ecom.productservice.dto.VariantsDTO;
 import com.ecom.productservice.entity.Category;
+import com.ecom.productservice.entity.Variants;
 import com.ecom.productservice.repository.CategoryRepository;
 import com.ecom.productservice.repository.ProductsRepository;
 
@@ -64,6 +66,14 @@ public class ProductService {
 		List<Category> list = catRepo.findAll(filterBy(catName, available, createdBy));
 
 		return CategoriesDTO.builder().categories(mapper.toListCategoryDTO(list)).build();
+	}
+
+	public VariantsDTO findVariants(UUID id, UUID variantId) {
+
+		Variants variants = catRepo.findById(id).orElseThrow().getVariants().stream().filter(x -> x.getId().equals(variantId))
+				.findAny().orElseThrow();
+
+		return mapper.toVariantsDTO(variants);
 	}
 
 }

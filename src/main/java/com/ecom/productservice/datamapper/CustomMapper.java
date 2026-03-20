@@ -9,8 +9,10 @@ import org.mapstruct.Mapper;
 import com.ecom.productservice.dto.CategoriesDTO;
 import com.ecom.productservice.dto.CategoriesDTO.CategoryDTO;
 import com.ecom.productservice.dto.ProductsDTO;
+import com.ecom.productservice.dto.VariantsDTO;
 import com.ecom.productservice.entity.Category;
 import com.ecom.productservice.entity.Products;
+import com.ecom.productservice.entity.Variants;
 
 @Mapper  (componentModel = "spring")
 public interface CustomMapper {
@@ -26,6 +28,8 @@ public interface CustomMapper {
 	
 	
 	List<ProductsDTO> toProductsDTO(List<Products> prods);
+	
+	VariantsDTO toVariantsDTO(Variants variants);
 
 
 	default String descriptionToString(Clob clob) {

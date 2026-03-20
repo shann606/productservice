@@ -25,46 +25,49 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "online_products")
 public class Products {
-	
+
 	@Id
-	@Column(name="id" , nullable = false)
+	@Column(name = "id", nullable = false)
 	private UUID id;
-	
-	@Column(name="product_item_id" , nullable = false ,insertable = false , updatable = false)
+
+	@Column(name = "product_item_id", nullable = false, insertable = false, updatable = false)
 	private UUID productItemId;
-	
-	@Column(name="product_brand" , nullable = false)
+
+	@Column(name = "product_brand", nullable = false)
 	private String brand;
-	
-	@Column(name="product_description" , nullable = false)
+
+	@Column(name = "product_description", nullable = false)
 	private Clob description;
-	
-	@Column(name="product_price")
+
+	@Column(name = "product_price")
 	private BigDecimal price;
-	
-	@Column(name="available" , nullable = false)
+
+	@Column(name = "available", nullable = false)
 	private boolean available;
-	
-	@Column(name ="created_on" , columnDefinition = "Date")
+
+	@Column(name = "quantity", nullable = false)
+	private Integer quantity;
+
+	@Column(name = "created_on", columnDefinition = "Date")
 	private OffsetDateTime createdOn;
-	
-	@Column(name ="updated_on" , columnDefinition = "Date")
+
+	@Column(name = "updated_on", columnDefinition = "Date")
 	private OffsetDateTime updatedOn;
-	
-	@Column(name ="created_by")
+
+	@Column(name = "created_by")
 	@CreatedBy
 	private String createdBy;
-	
-	@Column(name ="updated_by")
+
+	@Column(name = "updated_by")
 	@LastModifiedBy
 	private String updatedBy;
-	
-	
+
 	@PrePersist
 	public void generateId() {
 		if (id == null) {
 			id = UUID.randomUUID();
 		}
 	}
+
 
 }

@@ -46,7 +46,7 @@ public class ProductController {
 		this.productService = productService;
 	}
 
-	@GetMapping("/getproducts")
+	@GetMapping("")
 	public ResponseEntity<CategoriesDTO> getProducts() {
 
 		return ResponseEntity.ok(productService.getAllProducts());
@@ -105,6 +105,14 @@ public class ProductController {
 		}
 
 		return response;
+	}
+	
+	@GetMapping("/{id}/variants/{variantId}")
+	public ResponseEntity<VariantsDTO> getVariants(@PathVariable(required = true) UUID id , @PathVariable(required = true) UUID variantId){
+		
+		return ResponseEntity.ok(productService.findVariants(id,variantId));
+		
+		
 	}
 
 	@GetMapping("/filter")

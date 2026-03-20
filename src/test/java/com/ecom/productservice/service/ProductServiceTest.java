@@ -50,18 +50,18 @@ class ProductServiceTest {
 	@BeforeAll
 	static void setData() {
 
-		List<CategoryDTO> list = new ArrayList<CategoriesDTO.CategoryDTO>();
+		List<CategoryDTO> list = new ArrayList<>();
 		List<Variants> varList = new ArrayList<Variants>();
 		List<ProductItems> itemList = new ArrayList<ProductItems>();
 		List<Products> prodList1 = new ArrayList<Products>();
 		List<Products> prodList2 = new ArrayList<Products>();
-		prodList1.add(Products.builder().id(UUID.randomUUID()).available(true).brand("Polo")
+		prodList1.add(Products.builder().id(UUID.randomUUID()).available(true).quantity(10).brand("Polo")
 				.createdOn(OffsetDateTime.now()).createdBy("Admin").price(new BigDecimal(1000)).build());
-		prodList1.add(Products.builder().id(UUID.randomUUID()).available(true).brand("Jockey")
+		prodList1.add(Products.builder().id(UUID.randomUUID()).available(true).quantity(13).brand("Jockey")
 				.createdOn(OffsetDateTime.now()).createdBy("Admin").price(new BigDecimal(2000)).build());
-		prodList2.add(Products.builder().id(UUID.randomUUID()).available(true).brand("Peter England")
+		prodList2.add(Products.builder().id(UUID.randomUUID()).available(true).quantity(4).brand("Peter England")
 				.createdOn(OffsetDateTime.now()).createdBy("Admin").price(new BigDecimal(400)).build());
-		prodList2.add(Products.builder().id(UUID.randomUUID()).available(true).brand("Bombay Dying")
+		prodList2.add(Products.builder().id(UUID.randomUUID()).available(true).quantity(20).brand("Bombay Dying")
 				.createdOn(OffsetDateTime.now()).createdBy("Admin").price(new BigDecimal(1000)).build());
 
 		itemList.add(ProductItems.builder().id(UUID.randomUUID()).available(true).productItemName("Formal Shirts")

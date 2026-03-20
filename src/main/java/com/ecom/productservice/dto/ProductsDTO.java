@@ -21,6 +21,7 @@ public class ProductsDTO {
 	private String description;
 	private BigDecimal price;
 	private boolean available;
+	private int quantity;
 	private OffsetDateTime createdOn;
 	private OffsetDateTime updatedOn;
 	private String createdBy;
