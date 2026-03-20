@@ -61,16 +61,16 @@ class ProductControllerTest {
 		List<ProductItemsDTO> itemList = new ArrayList<ProductItemsDTO>();
 		List<ProductsDTO> prodList1 = new ArrayList<ProductsDTO>();
 		List<ProductsDTO> prodList2 = new ArrayList<ProductsDTO>();
-		prodList1.add(ProductsDTO.builder().id(UUID.randomUUID()).available(true).brand("Polo")
+		prodList1.add(ProductsDTO.builder().id(UUID.randomUUID()).available(true).quantity(4).brand("Polo")
 				.description("PoloTshits will fit good").createdOn(OffsetDateTime.now()).createdBy("Admin")
 				.price(new BigDecimal(1000)).build());
-		prodList1.add(ProductsDTO.builder().id(UUID.randomUUID()).available(true).brand("Jockey")
+		prodList1.add(ProductsDTO.builder().id(UUID.randomUUID()).available(true).quantity(4).brand("Jockey")
 				.description("Jockey Tshits will fit good").createdOn(OffsetDateTime.now()).createdBy("Admin")
 				.price(new BigDecimal(2000)).build());
-		prodList2.add(ProductsDTO.builder().id(UUID.randomUUID()).available(true).brand("Peter England")
+		prodList2.add(ProductsDTO.builder().id(UUID.randomUUID()).available(true).quantity(3).brand("Peter England")
 				.description("Formal PE will fit good").createdOn(OffsetDateTime.now()).createdBy("Admin")
 				.price(new BigDecimal(400)).build());
-		prodList2.add(ProductsDTO.builder().id(UUID.randomUUID()).available(true).brand("Bombay Dying")
+		prodList2.add(ProductsDTO.builder().id(UUID.randomUUID()).available(true).quantity(2).brand("Bombay Dying")
 				.description("Formal Bombay Dying will fit good").createdOn(OffsetDateTime.now()).createdBy("Admin")
 				.price(new BigDecimal(1000)).build());
 
@@ -97,7 +97,7 @@ class ProductControllerTest {
 
 		when(productSerivce.getAllProducts()).thenReturn(cat);
 
-		mockMVC.perform(get("/api/v1/products/getproducts").contentType(MediaType.APPLICATION_JSON))
+		mockMVC.perform(get("/api/v1/products").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 
 		verify(productSerivce, atLeastOnce()).getAllProducts();
