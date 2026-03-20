@@ -50,7 +50,7 @@ class ProductServiceTest {
 	@BeforeAll
 	static void setData() {
 
-		List<CategoryDTO> list = new ArrayList<CategoriesDTO.CategoryDTO>();
+		List<CategoryDTO> list = new ArrayList<>();
 		List<Variants> varList = new ArrayList<Variants>();
 		List<ProductItems> itemList = new ArrayList<ProductItems>();
 		List<Products> prodList1 = new ArrayList<Products>();
