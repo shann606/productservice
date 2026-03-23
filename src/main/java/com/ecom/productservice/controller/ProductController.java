@@ -11,6 +11,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,7 +34,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/api/v1/categories")
 @Slf4j
 public class ProductController {
 
@@ -52,7 +53,7 @@ public class ProductController {
 		return ResponseEntity.ok(productService.getAllProducts());
 	}
 
-	@PostMapping("/newproduct")
+	@PostMapping("/addcategory")
 	public ResponseEntity<CategoriesDTO.CategoryDTO> addProducts(@RequestBody CategoriesDTO.CategoryDTO category) {
 
 		return ResponseEntity.ok(productService.saveCategories(category));
@@ -66,7 +67,7 @@ public class ProductController {
 
 	}
 
-	@PutMapping("/updateproduct")
+	@PutMapping("/updatecategory")
 	public ResponseEntity<CategoriesDTO.CategoryDTO> updateProducts(@RequestBody CategoriesDTO.CategoryDTO category) {
 
 		return ResponseEntity.ok(productService.saveCategories(category));
@@ -106,13 +107,22 @@ public class ProductController {
 
 		return response;
 	}
-	
+
 	@GetMapping("/{id}/variants/{variantId}")
-	public ResponseEntity<VariantsDTO> getVariants(@PathVariable(required = true) UUID id , @PathVariable(required = true) UUID variantId){
-		
-		return ResponseEntity.ok(productService.findVariants(id,variantId));
-		
-		
+	public ResponseEntity<VariantsDTO> getVariants(@PathVariable(required = true) UUID id,
+			@PathVariable(required = true) UUID variantId) {
+
+		return ResponseEntity.ok(productService.findVariants(id, variantId));
+
+	}
+
+	@PatchMapping("products/{id}/quantity")
+	public ResponseEntity<String> updateQuantity(@PathVariable UUID id, @RequestParam int quantity) {
+		if (quantity < 0) {
+			throw new IllegalArgumentException("Quantity cannot be negative");
+		}
+
+		return ResponseEntity.accepted().body(productService.updateQuantity(id, quantity));
 	}
 
 	@GetMapping("/filter")
@@ -120,6 +130,15 @@ public class ProductController {
 			@RequestParam(required = false) Boolean available, @RequestParam(required = false) String createdBy) {
 
 		return ResponseEntity.ok(productService.filterCategoryBy(catName, available, createdBy));
+
+	}
+
+	@GetMapping("/checkquantity/{id}/quantity")
+	public ResponseEntity<String> checkQuantity(@PathVariable UUID id, @RequestParam int quantity) {
+		if (quantity < 0) {
+			throw new IllegalArgumentException("Quantity cannot be negative");
+		}
+		return ResponseEntity.ok(productService.checkQuantity(id, quantity));
 
 	}
 
