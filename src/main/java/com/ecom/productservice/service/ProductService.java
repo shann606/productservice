@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ecom.productservice.datamapper.CustomMapper;
 import com.ecom.productservice.dto.CategoriesDTO;
@@ -14,6 +15,7 @@ import com.ecom.productservice.dto.CategoriesDTO.CategoryDTO;
 import com.ecom.productservice.dto.ProductsDTO;
 import com.ecom.productservice.dto.VariantsDTO;
 import com.ecom.productservice.entity.Category;
+import com.ecom.productservice.entity.Products;
 import com.ecom.productservice.entity.Variants;
 import com.ecom.productservice.repository.CategoryRepository;
 import com.ecom.productservice.repository.ProductsRepository;
@@ -70,10 +72,24 @@ public class ProductService {
 
 	public VariantsDTO findVariants(UUID id, UUID variantId) {
 
-		Variants variants = catRepo.findById(id).orElseThrow().getVariants().stream().filter(x -> x.getId().equals(variantId))
-				.findAny().orElseThrow();
+		Variants variants = catRepo.findById(id).orElseThrow().getVariants().stream()
+				.filter(x -> x.getId().equals(variantId)).findAny().orElseThrow();
 
 		return mapper.toVariantsDTO(variants);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public String updateQuantity(UUID id, int quantity) {
+
+		Products product = prodRepo.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+
+		product.setQuantity(quantity);
+		return "Updated Successfully";
+	}
+
+	public String checkQuantity(UUID id, int quantity) {
+		return prodRepo.findById(id).orElseThrow(() -> new RuntimeException("Product not found"))
+				.getQuantity() < quantity ? "not available" : "available";
 	}
 
 }

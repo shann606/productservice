@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.Version;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -61,6 +62,9 @@ public class Products {
 	@Column(name = "updated_by")
 	@LastModifiedBy
 	private String updatedBy;
+	
+	@Version
+    private int version;
 
 	@PrePersist
 	public void generateId() {
