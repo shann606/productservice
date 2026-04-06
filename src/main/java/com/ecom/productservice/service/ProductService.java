@@ -3,6 +3,7 @@ package com.ecom.productservice.service;
 import static com.ecom.productservice.util.CategorySpecfication.filterBy;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.data.domain.Sort;
@@ -87,9 +88,37 @@ public class ProductService {
 		return "Updated Successfully";
 	}
 
-	public String checkQuantity(UUID id, int quantity) {
-		return prodRepo.findById(id).orElseThrow(() -> new RuntimeException("Product not found"))
-				.getQuantity() < quantity ? "not available" : "available";
+	public String checkQuantity(Map<UUID, Integer> quantityCheck, String action) {
+		log.info("Checking the Quantity");
+
+		quantityCheck.entrySet().forEach(x -> {
+			UUID id = x.getKey();
+			int quantity = x.getValue();
+
+			if (quantity < 0) {
+				throw new IllegalArgumentException("Quantity cannot be negative");
+			}
+
+			Products product = prodRepo.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+			int originalQty = product.getQuantity();
+
+			if (action.equals("order")) {
+
+				if (originalQty < quantity)
+					throw new RuntimeException("Insufficent Quantity available for this product");
+
+				product.setQuantity(originalQty - quantity);
+
+			} else if (action.equals("refund")) {
+
+				product.setQuantity(originalQty + quantity);
+			}
+
+			prodRepo.save(product);
+
+		});
+		return "Success";
+
 	}
 
 }
