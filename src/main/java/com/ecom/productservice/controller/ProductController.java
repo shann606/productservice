@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -133,12 +134,10 @@ public class ProductController {
 
 	}
 
-	@GetMapping("/checkquantity/{id}/quantity")
-	public ResponseEntity<String> checkQuantity(@PathVariable UUID id, @RequestParam int quantity) {
-		if (quantity < 0) {
-			throw new IllegalArgumentException("Quantity cannot be negative");
-		}
-		return ResponseEntity.ok(productService.checkQuantity(id, quantity));
+	@PatchMapping("/products/quantity")
+	public ResponseEntity<String> checkQuantity(@RequestBody Map<UUID, Integer> quantityCheck, @RequestParam String action) {
+	
+		return ResponseEntity.ok(productService.checkQuantity(quantityCheck, action));
 
 	}
 
