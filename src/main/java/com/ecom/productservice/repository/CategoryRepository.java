@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,5 +16,6 @@ public interface CategoryRepository extends JpaRepository<Category, UUID>, JpaSp
 	
 	@Override
 	@Transactional(timeout = 10)
+	@Query("select u from Category u join fetch u.variants")
 	 List<Category> findAll(); 
 }
