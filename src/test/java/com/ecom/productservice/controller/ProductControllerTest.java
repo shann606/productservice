@@ -62,29 +62,29 @@ class ProductControllerTest {
 		List<ProductsDTO> prodList1 = new ArrayList<ProductsDTO>();
 		List<ProductsDTO> prodList2 = new ArrayList<ProductsDTO>();
 		prodList1.add(ProductsDTO.builder().id(UUID.randomUUID()).available(true).quantity(4).brand("Polo")
-				.description("PoloTshits will fit good").createdOn(OffsetDateTime.now()).createdBy("Admin")
+				.description("PoloTshits will fit good").createdOn(OffsetDateTime.parse("2026-05-14T10:15:30+00:00")).createdBy("Admin")
 				.price(new BigDecimal(1000)).build());
 		prodList1.add(ProductsDTO.builder().id(UUID.randomUUID()).available(true).quantity(4).brand("Jockey")
-				.description("Jockey Tshits will fit good").createdOn(OffsetDateTime.now()).createdBy("Admin")
+				.description("Jockey Tshits will fit good").createdOn(OffsetDateTime.parse("2026-05-14T10:15:30+00:00")).createdBy("Admin")
 				.price(new BigDecimal(2000)).build());
 		prodList2.add(ProductsDTO.builder().id(UUID.randomUUID()).available(true).quantity(3).brand("Peter England")
-				.description("Formal PE will fit good").createdOn(OffsetDateTime.now()).createdBy("Admin")
+				.description("Formal PE will fit good").createdOn(OffsetDateTime.parse("2026-05-14T10:15:30+00:00")).createdBy("Admin")
 				.price(new BigDecimal(400)).build());
 		prodList2.add(ProductsDTO.builder().id(UUID.randomUUID()).available(true).quantity(2).brand("Bombay Dying")
-				.description("Formal Bombay Dying will fit good").createdOn(OffsetDateTime.now()).createdBy("Admin")
+				.description("Formal Bombay Dying will fit good").createdOn(OffsetDateTime.parse("2026-05-14T10:15:30+00:00")).createdBy("Admin")
 				.price(new BigDecimal(1000)).build());
 
 		itemList.add(ProductItemsDTO.builder().id(UUID.randomUUID()).available(true).productItemName("Formal Shirts")
-				.createdOn(OffsetDateTime.now()).createdBy("Admin").products(prodList2).build());
+				.createdOn(OffsetDateTime.parse("2026-05-14T10:15:30+00:00")).createdBy("Admin").products(prodList2).build());
 		itemList.add(ProductItemsDTO.builder().id(UUID.randomUUID()).available(true).productItemName("T Shirts")
-				.createdOn(OffsetDateTime.now()).createdBy("Admin").products(prodList1).build());
-		varList.add(VariantsDTO.builder().id(UUID.randomUUID()).available(true).createdOn(OffsetDateTime.now())
+				.createdOn(OffsetDateTime.parse("2026-05-14T10:15:30+00:00")).createdBy("Admin").products(prodList1).build());
+		varList.add(VariantsDTO.builder().id(UUID.randomUUID()).available(true).createdOn(OffsetDateTime.parse("2026-05-14T10:15:30+00:00"))
 				.createdBy("Admin").variantName("Men's Clothing").productItems(itemList).build());
 		list.add(CategoriesDTO.CategoryDTO.builder().id(UUID.randomUUID()).categoryName("Fashions").available(true)
-				.createdOn(OffsetDateTime.now()).createdBy("Admin").variants(varList).build());
+				.createdOn(OffsetDateTime.parse("2026-05-14T10:15:30+00:00")).createdBy("Admin").variants(varList).build());
 
 		category = CategoriesDTO.CategoryDTO.builder().id(UUID.fromString("b516f577-11da-424e-9ad0-bc23ab15df1b"))
-				.categoryName("Fashions").available(true).createdOn(OffsetDateTime.now()).createdBy("Admin")
+				.categoryName("Fashions").available(true).createdOn(OffsetDateTime.parse("2026-05-14T10:15:30+00:00")).createdBy("Admin")
 				.variants(varList).build();
 
 		cat = CategoriesDTO.builder().categories(list).build();
@@ -97,7 +97,7 @@ class ProductControllerTest {
 
 		when(productSerivce.getAllProducts()).thenReturn(cat);
 
-		mockMVC.perform(get("/api/v1/products").contentType(MediaType.APPLICATION_JSON))
+		mockMVC.perform(get("/api/v1/categories").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 
 		verify(productSerivce, atLeastOnce()).getAllProducts();
@@ -112,7 +112,7 @@ class ProductControllerTest {
 
 		when(productSerivce.findById(id)).thenReturn(category);
 
-		mockMVC.perform(get("/api/v1/products/{id}", id).contentType(MediaType.APPLICATION_JSON))
+		mockMVC.perform(get("/api/v1/categories/{id}", id).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 
 		verify(productSerivce, atLeastOnce()).findById(id);
@@ -125,8 +125,10 @@ class ProductControllerTest {
 
 		when(productSerivce.saveCategories(category)).thenReturn(category);
 
-		mockMVC.perform(post("/api/v1/products/newproduct").contentType(MediaType.APPLICATION_JSON)
+		mockMVC.perform(post("/api/v1/categories/addcategory").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(category))).andExpect(status().isOk()).andReturn();
+		
+		verify(productSerivce, atLeastOnce()).saveCategories(category);
 
 
 	}
@@ -137,8 +139,10 @@ class ProductControllerTest {
 
 		when(productSerivce.saveCategories(category)).thenReturn(category);
 
-		mockMVC.perform(put("/api/v1/products/updateproduct").contentType(MediaType.APPLICATION_JSON)
+		mockMVC.perform(put("/api/v1/categories/updatecategory").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(category))).andExpect(status().isOk()).andReturn();
+		
+		verify(productSerivce, atLeastOnce()).saveCategories(category);
 
 	}
 
