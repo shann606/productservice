@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.query.QueryLookupStrategy.Key;
 
 @SpringBootApplication 
-@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
-@EnableJpaRepositories(basePackages = "com.ecom.productservice.repository" , queryLookupStrategy = Key.CREATE_IF_NOT_FOUND)
 public class ProductserviceApplication {
 
 	public static void main(String[] args) {
