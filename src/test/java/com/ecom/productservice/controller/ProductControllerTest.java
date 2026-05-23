@@ -1,11 +1,12 @@
 package com.ecom.productservice.controller;
 
-import static org.hamcrest.CoreMatchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -14,7 +15,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -31,7 +34,7 @@ import com.ecom.productservice.dto.ProductItemsDTO;
 import com.ecom.productservice.dto.ProductsDTO;
 import com.ecom.productservice.dto.VariantsDTO;
 import com.ecom.productservice.service.ProductService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;;
 
 @WebMvcTest(ProductController.class)
 class ProductControllerTest {
@@ -105,7 +108,7 @@ class ProductControllerTest {
 
 	@Test
 	void testAddProducts() throws Exception {
-		when(productService.saveCategories(category)).thenReturn(category);
+		when(productService.saveCategories(any(CategoriesDTO.CategoryDTO.class))).thenReturn(category);
 
 		mockMvc.perform(post("/api/v1/categories/addcategory").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(category))).andExpect(status().isOk()).andReturn();
@@ -118,7 +121,7 @@ class ProductControllerTest {
 	void testFindProductById() throws Exception {
 		UUID id = UUID.fromString("b516f577-11da-424e-9ad0-bc23ab15df1b");
 
-		when(productService.findById(id)).thenReturn(category);
+		when(productService.findById(any(UUID.class))).thenReturn(category);
 
 		mockMvc.perform(get("/api/v1/categories/{id}", id).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
@@ -140,20 +143,60 @@ class ProductControllerTest {
 	void testGetRecommendationProds() throws Exception {
 		UUID prodId = UUID.fromString("7fb2814b-b984-472b-bb22-ac69651c2859");
 
-		when(productService.getRecommendedProducts(prodId)).thenReturn(recommendedProds);
+		when(productService.getRecommendedProducts(any(UUID.class))).thenReturn(recommendedProds);
 
 		mockMvc.perform(get("/api/v1/categories/recommendation/{prodItemId}", prodId)).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON));
-		
+
 		verify(productService, times(1)).getRecommendedProducts(prodId);
 	}
-	/*
-	 * @Test void testGetVariants() { assertTrue(true); }
-	 * 
-	 * @Test void testUpdateQuantity() { assertTrue(true); }
-	 * 
-	 * @Test void testFilterCategoryBy() { assertTrue(true); }
-	 * 
-	 * @Test void testCheckQuantity() { assertTrue(true); }
-	 */
+
+	@Test
+	void testUpdateQuantity() throws Exception {
+		UUID prodId = UUID.fromString("7fb2814b-b984-472b-bb22-ac69651c2859");
+
+		when(productService.updateQuantity(any(UUID.class), any(Integer.class))).thenReturn("Success");
+
+		mockMvc.perform(patch("/api/v1/categories/products/{id}/quantity?quantity={qty}", prodId, 2))
+				.andExpect(status().isAccepted());
+
+		verify(productService, times(1)).updateQuantity(prodId, 2);
+
+	}
+
+	@Test
+	void testFilterCategoryBy() throws Exception {
+
+		when(productService.filterCategoryBy(any(String.class), any(Boolean.class), any(String.class))).thenReturn(cat);
+
+		mockMvc.perform(get("/api/v1/categories/filter").param("catName", "catName").param("available", "true")
+				.param("createdBy", "createdBy")).andExpect(status().isOk());
+
+		verify(productService, times(1)).filterCategoryBy(any(), any(Boolean.class), any());
+
+	}
+
+	@Test
+	void testCheckQuantity() throws Exception {
+		
+		Map<UUID, Integer> quantityMap = new HashMap<UUID, Integer>();
+		quantityMap.put(UUID.fromString("7fb2814b-b984-472b-bb22-ac69651c2859"), 5);
+
+        String actionParam = "check";
+        String expectedResponse = "Success";
+        
+		when(productService.checkQuantity(any(Map.class), any(String.class))).thenReturn(expectedResponse);
+
+		 // 3. Perform the request and assert the results
+        mockMvc.perform(patch("/api/v1/categories/products/quantity")
+                .param("action", actionParam)
+                .contentType(MediaType.APPLICATION_JSON) // Must specify JSON content type
+                .content(objectMapper.writeValueAsString(quantityMap))) // Convert Map to JSON String
+                .andExpect(status().isOk())
+                .andExpect(content().string(expectedResponse));
+
+		verify(productService, times(1)).checkQuantity(any(Map.class), any(String.class));
+
+	}
+
 }
